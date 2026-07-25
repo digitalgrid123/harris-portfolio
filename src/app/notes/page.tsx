@@ -36,11 +36,11 @@ function getYear(iso: string) {
 }
 
 function groupByYear(
-  items: Array<{ first_publication_date: string; uid: string; data: any }>,
+  items: Array<{ first_publication_date: string; uid: string | null; data: any }>,
 ) {
   const groups = new Map<
     number,
-    Array<{ first_publication_date: string; uid: string; data: any }>
+    Array<{ first_publication_date: string; uid: string | null; data: any }>
   >();
   for (const item of items) {
     const year = getYear(item.first_publication_date);
@@ -98,6 +98,10 @@ export default async function NotesPage() {
     );
 
     for (const note of items) {
+      if (!note.uid) {
+        continue;
+      }
+
       const { title, excerpt } = note.data;
       const uid = note.uid;
       const itemStage = nextStage();

@@ -28,18 +28,18 @@ export const navigation: NavItem[] = [
     icon: "ri-lightbulb-line",
     hideLabelOnDesktop: false,
   },
-  {
-    title: "About",
-    href: "/about",
-    icon: "ri-user-3-line",
-    hideLabelOnDesktop: false,
-  },
-  {
-    title: "Resume",
-    href: "/resume",
-    icon: "ri-file-list-3-line",
-    hideLabelOnDesktop: false,
-  },
+  // {
+  //   title: "About",
+  //   href: "/about",
+  //   icon: "ri-user-3-line",
+  //   hideLabelOnDesktop: false,
+  // },
+  // {
+  //   title: "Resume",
+  //   href: "/resume",
+  //   icon: "ri-file-list-3-line",
+  //   hideLabelOnDesktop: false,
+  // },
   {
     title: "Photos",
     href: "/photos",

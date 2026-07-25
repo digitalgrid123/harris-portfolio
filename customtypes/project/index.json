@@ -1,0 +1,137 @@
+{
+  "id": "project",
+  "label": "Project",
+  "repeatable": true,
+  "status": true,
+  "json": {
+    "Main": {
+      "uid": {
+        "type": "UID",
+        "config": {
+          "label": "Project UID"
+        }
+      },
+      "title": {
+        "type": "Text",
+        "config": {
+          "label": "Project Title"
+        }
+      },
+      "excerpt": {
+        "type": "Text",
+        "config": {
+          "label": "Project Excerpt"
+        }
+      }
+    },
+    "Details": {
+      "category": {
+        "type": "Select",
+        "config": {
+          "label": "Category",
+          "placeholder": "Select a category",
+          "options": [
+            "Current Focus",
+            "Framework",
+            "Library",
+            "Tool",
+            "Website",
+            "Application",
+            "Other"
+          ]
+        }
+      },
+      "type": {
+        "type": "Select",
+        "config": {
+          "label": "Project Type",
+          "placeholder": "Select project type",
+          "options": [
+            "Web Development",
+            "Frontend",
+            "Backend",
+            "Full Stack",
+            "Mobile",
+            "Desktop",
+            "CLI Tool",
+            "Library/Framework",
+            "Design System",
+            "Open Source",
+            "Learning Project",
+            "Experiment"
+          ]
+        }
+      },
+      "status": {
+        "type": "Select",
+        "config": {
+          "label": "Status",
+          "placeholder": "Select status",
+          "options": [
+            "Active",
+            "Maintained",
+            "Archived",
+            "In Progress"
+          ]
+        }
+      },
+      "tech_stack": {
+        "type": "Text",
+        "config": {
+          "label": "Tech Stack (comma-separated)"
+        }
+      }
+    },
+    "Media": {
+      "featured_image": {
+        "type": "Image",
+        "config": {
+          "label": "Featured Image (Optional)"
+        }
+      },
+      "image_alt": {
+        "type": "Text",
+        "config": {
+          "label": "Image Alt Text"
+        }
+      }
+    },
+    "Content": {
+      "content": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Project Content",
+          "placeholder": "Enter project details..."
+        }
+      },
+      "demo_link": {
+        "type": "Text",
+        "config": {
+          "label": "Demo Link (Optional)"
+        }
+      }
+    },
+    "Links": {
+      "github_link": {
+        "type": "Text",
+        "config": {
+          "label": "GitHub Repository Link (e.g., https://github.com/username/repo)"
+        }
+      }
+    },
+    "SEO": {
+      "meta_title": {
+        "type": "Text",
+        "config": {
+          "label": "Meta Title"
+        }
+      },
+      "meta_description": {
+        "type": "Text",
+        "config": {
+          "label": "Meta Description"
+        }
+      }
+    }
+  }
+}

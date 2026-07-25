@@ -36,11 +36,15 @@ function getYear(iso: string) {
 }
 
 function groupByYear(
-  items: Array<{ first_publication_date: string; uid: string; data: any }>,
+  items: Array<{
+    first_publication_date: string;
+    uid: string | null;
+    data: any;
+  }>,
 ) {
   const groups = new Map<
     number,
-    Array<{ first_publication_date: string; uid: string; data: any }>
+    Array<{ first_publication_date: string; uid: string | null; data: any }>
   >();
   for (const item of items) {
     const year = getYear(item.first_publication_date);
@@ -69,7 +73,6 @@ async function getPosts() {
 
 export default async function PostsPage() {
   const posts = await getPosts();
-  console.log("🚀 ~ PostsPage ~ posts:", posts);
   const groups = groupByYear(posts);
 
   let stage = 0;
@@ -99,6 +102,10 @@ export default async function PostsPage() {
     );
 
     for (const post of items) {
+      if (!post.uid) {
+        continue;
+      }
+
       const { title, excerpt } = post.data;
       const uid = post.uid;
       const itemStage = nextStage();
