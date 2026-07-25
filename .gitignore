@@ -48,6 +48,10 @@ next-env.d.ts
 *.swo
 *~
 
+# local repo guidance files
+AGENTS.md
+CLAUDE.md
+
 # local build / cache artifacts
 /.turbo/
 /.cache/
