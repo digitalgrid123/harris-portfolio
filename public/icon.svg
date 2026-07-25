@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 180" width="220" height="180">
+  <g transform="rotate(-3 110 100)">
+    <path
+      d="M 22 130 C 25 95, 30 60, 40 45
+         C 34 45, 30 62, 32 92 C 34 118, 36 136, 38 150
+         C 40 135, 45 108, 55 105 C 65 102, 70 130, 72 150
+         C 85 150, 90 120, 100 105
+         C 106 96, 130 135, 95 145
+         C 78 150, 120 150, 160 145"
+      fill="none"
+      stroke="#f3f1ec"
+      stroke-width="5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </g>
+</svg>
