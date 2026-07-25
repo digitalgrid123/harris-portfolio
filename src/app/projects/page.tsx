@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@/prismicio";
 import { getRecentReleases } from "@/lib/github-releases";
@@ -9,7 +8,7 @@ export const metadata: Metadata = {
   description: "Projects that I created and projects I'm maintaining.",
 };
 
-async function getProjects() {
+async function getProjects(): Promise<Project[]> {
   const client = createClient();
   try {
     const projects = await client.getAllByType("project", {
@@ -18,7 +17,13 @@ async function getProjects() {
         direction: "desc",
       },
     });
-    return projects;
+    // Filter out projects with null uid to match Project interface
+    return projects
+      .filter((project) => project.uid !== null && project.uid !== undefined)
+      .map((project) => ({
+        uid: project.uid as string,
+        data: project.data as Project["data"],
+      }));
   } catch (error) {
     console.error("Failed to fetch projects from Prismic:", error);
     return [];
@@ -48,7 +53,7 @@ interface Project {
   };
 }
 
-type ProjectType = 
+type ProjectType =
   | "Web Development"
   | "Frontend"
   | "Backend"
@@ -64,26 +69,76 @@ type ProjectType =
 
 function getProjectIcon(projectType?: ProjectType) {
   const iconMap: Record<ProjectType, { icon: string; color: string }> = {
-    "Web Development": { icon: "ri-earth-line", color: "bg-gray-200/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400" },
-    "Frontend": { icon: "ri-layout-grid-line", color: "bg-gray-200/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400" },
-    "Backend": { icon: "ri-server-line", color: "bg-gray-200/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400" },
-    "Full Stack": { icon: "ri-stack-line", color: "bg-gray-200/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400" },
-    "Mobile": { icon: "ri-smartphone-line", color: "bg-gray-200/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400" },
-    "Desktop": { icon: "ri-computer-line", color: "bg-gray-200/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400" },
-    "CLI Tool": { icon: "ri-terminal-line", color: "bg-gray-200/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400" },
-    "Library/Framework": { icon: "ri-box-3-line", color: "bg-gray-200/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400" },
-    "Design System": { icon: "ri-palette-line", color: "bg-gray-200/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400" },
-    "Open Source": { icon: "ri-git-repository-line", color: "bg-gray-200/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400" },
-    "Learning Project": { icon: "ri-lightbulb-line", color: "bg-gray-200/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400" },
-    "Experiment": { icon: "ri-flask-line", color: "bg-gray-200/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400" },
+    "Web Development": {
+      icon: "ri-earth-line",
+      color:
+        "bg-gray-200/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400",
+    },
+    Frontend: {
+      icon: "ri-layout-grid-line",
+      color:
+        "bg-gray-200/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400",
+    },
+    Backend: {
+      icon: "ri-server-line",
+      color:
+        "bg-gray-200/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400",
+    },
+    "Full Stack": {
+      icon: "ri-stack-line",
+      color:
+        "bg-gray-200/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400",
+    },
+    Mobile: {
+      icon: "ri-smartphone-line",
+      color:
+        "bg-gray-200/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400",
+    },
+    Desktop: {
+      icon: "ri-computer-line",
+      color:
+        "bg-gray-200/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400",
+    },
+    "CLI Tool": {
+      icon: "ri-terminal-line",
+      color:
+        "bg-gray-200/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400",
+    },
+    "Library/Framework": {
+      icon: "ri-box-3-line",
+      color:
+        "bg-gray-200/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400",
+    },
+    "Design System": {
+      icon: "ri-palette-line",
+      color:
+        "bg-gray-200/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400",
+    },
+    "Open Source": {
+      icon: "ri-git-repository-line",
+      color:
+        "bg-gray-200/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400",
+    },
+    "Learning Project": {
+      icon: "ri-lightbulb-line",
+      color:
+        "bg-gray-200/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400",
+    },
+    Experiment: {
+      icon: "ri-flask-line",
+      color:
+        "bg-gray-200/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400",
+    },
   };
 
-  return iconMap[projectType || "Web Development"] || iconMap["Web Development"];
+  return (
+    iconMap[projectType || "Web Development"] || iconMap["Web Development"]
+  );
 }
 
 function groupProjectsByCategory(projects: Project[]) {
   const grouped: { [key: string]: Project[] } = {};
-  
+
   projects.forEach((project) => {
     const category = project.data.category || "Other Projects";
     if (!grouped[category]) {
@@ -95,7 +150,15 @@ function groupProjectsByCategory(projects: Project[]) {
   return grouped;
 }
 
-function ProjectCard({ project, idx, recentRelease }: { project: Project; idx: number; recentRelease?: any }) {
+function ProjectCard({
+  project,
+  idx,
+  recentRelease,
+}: {
+  project: Project;
+  idx: number;
+  recentRelease?: any;
+}) {
   const { title, excerpt, status, tech_stack, type } = project.data;
   const uid = project.uid;
   const { icon, color } = getProjectIcon(type as ProjectType);
@@ -112,7 +175,9 @@ function ProjectCard({ project, idx, recentRelease }: { project: Project; idx: n
       }
     >
       {/* Icon based on project type - Larger */}
-      <div className={`w-12 h-12 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0 ${color}`}>
+      <div
+        className={`w-12 h-12 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0 ${color}`}
+      >
         <i className={`${icon} text-xl`} />
       </div>
 
@@ -156,10 +221,10 @@ export default async function ProjectsPage() {
   const home = await getHome();
   const grouped = groupProjectsByCategory(projects);
   const categories = Object.keys(grouped).sort();
-  
+
   // Fetch recent releases if GitHub link is available
-  const recentRelease = home?.data?.github_url 
-    ? await getRecentReleases(home.data.github_url) 
+  const recentRelease = home?.data?.github_url
+    ? await getRecentReleases(home.data.github_url)
     : null;
 
   return (
@@ -240,7 +305,12 @@ export default async function ProjectsPage() {
                 {/* Projects Grid for this Category */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-3">
                   {grouped[category].map((project, idx) => (
-                    <ProjectCard key={project.uid} project={project} idx={idx} recentRelease={recentRelease} />
+                    <ProjectCard
+                      key={project.uid}
+                      project={project}
+                      idx={idx}
+                      recentRelease={recentRelease}
+                    />
                   ))}
                 </div>
               </section>

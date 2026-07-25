@@ -93,7 +93,7 @@ function parseInlineFormatting(text: string): React.ReactNode[] {
       parts.push(
         <strong key={`b-${match.index}`} className="font-semibold">
           {match[1]}
-        </strong>
+        </strong>,
       );
     } else if (match[2]) {
       parts.push(
@@ -102,19 +102,19 @@ function parseInlineFormatting(text: string): React.ReactNode[] {
           className="bg-zinc-800 px-1.5 py-0.5 rounded text-sm"
         >
           {match[2]}
-        </code>
+        </code>,
       );
     } else if (match[3]) {
       parts.push(
         <em key={`i-${match.index}`} className="italic">
           {match[3]}
-        </em>
+        </em>,
       );
     } else if (match[4]) {
       parts.push(
         <em key={`i2-${match.index}`} className="italic">
           {match[4]}
-        </em>
+        </em>,
       );
     }
 
@@ -149,14 +149,14 @@ async function parseContentBlock(text: string) {
       if (inCodeBlock) {
         const highlightedHtml = await highlightCode(
           codeContent.trimEnd(),
-          codeLanguage
+          codeLanguage,
         );
         if (highlightedHtml) {
           parts.push(
             <div
               key={`code-${parts.length}`}
               dangerouslySetInnerHTML={{ __html: highlightedHtml }}
-            />
+            />,
           );
         }
         codeContent = "";
@@ -186,7 +186,7 @@ async function parseContentBlock(text: string) {
               {parseInlineFormatting(item)}
             </li>
           ))}
-        </ul>
+        </ul>,
       );
       listItems = [];
     }
@@ -197,7 +197,7 @@ async function parseContentBlock(text: string) {
       parts.push(
         <h3 key={`h3-${parts.length}`} className="text-lg font-bold mt-6 mb-3">
           {headerText}
-        </h3>
+        </h3>,
       );
       continue;
     }
@@ -206,7 +206,7 @@ async function parseContentBlock(text: string) {
       parts.push(
         <h2 key={`h2-${parts.length}`} className="text-2xl font-bold mt-8 mb-4">
           {headerText}
-        </h2>
+        </h2>,
       );
       continue;
     }
@@ -215,7 +215,7 @@ async function parseContentBlock(text: string) {
       parts.push(
         <h1 key={`h1-${parts.length}`} className="text-3xl font-bold mt-8 mb-4">
           {headerText}
-        </h1>
+        </h1>,
       );
       continue;
     }
@@ -236,7 +236,7 @@ async function parseContentBlock(text: string) {
       parts.push(
         <p key={`p-${parts.length}`} className="mb-4 leading-relaxed text-base">
           {parseInlineFormatting(trimmed)}
-        </p>
+        </p>,
       );
     }
   }
@@ -245,14 +245,14 @@ async function parseContentBlock(text: string) {
   if (inCodeBlock) {
     const highlightedHtml = await highlightCode(
       codeContent.trimEnd(),
-      codeLanguage
+      codeLanguage,
     );
     if (highlightedHtml) {
       parts.push(
         <div
           key={`code-${parts.length}`}
           dangerouslySetInnerHTML={{ __html: highlightedHtml }}
-        />
+        />,
       );
     }
   }
@@ -269,7 +269,7 @@ async function parseContentBlock(text: string) {
             {parseInlineFormatting(item)}
           </li>
         ))}
-      </ul>
+      </ul>,
     );
   }
 
@@ -277,7 +277,7 @@ async function parseContentBlock(text: string) {
 }
 
 function reconstructContent(
-  blocks: any[]
+  blocks: any[],
 ): Array<{ type: string; text: string }> {
   const result: Array<{ type: string; text: string }> = [];
   let currentBlockLines: string[] = [];
@@ -375,7 +375,9 @@ export default async function ProjectDetailPage({
   const projectGithubLink = github_link || home?.data?.github_url;
 
   // Fetch recent releases from GitHub if link is provided
-  const recentRelease = projectGithubLink ? await getRecentReleases(projectGithubLink) : null;
+  const recentRelease = projectGithubLink
+    ? await getRecentReleases(projectGithubLink)
+    : null;
 
   const content = description;
   const reconstructedBlocks = Array.isArray(content)
@@ -449,7 +451,7 @@ export default async function ProjectDetailPage({
             Technology Stack
           </h3>
           <div className="flex flex-wrap gap-2">
-            {tech_stack.split(",").map((tech, i) => (
+            {tech_stack.split(",").map((tech: string, i: number) => (
               <span
                 key={i}
                 className="inline-block text-sm bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 px-3 py-1.5 rounded-full font-medium"
@@ -473,7 +475,7 @@ export default async function ProjectDetailPage({
                     {parsedContent}
                   </div>
                 );
-              })
+              }),
             )}
           </div>
         </div>
