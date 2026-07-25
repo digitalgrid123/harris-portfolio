@@ -1,0 +1,120 @@
+{
+  "id": "about",
+  "label": "About",
+  "repeatable": false,
+  "status": true,
+  "json": {
+    "Main": {
+      "title": {
+        "type": "Text",
+        "config": {
+          "label": "Title"
+        }
+      },
+      "subtitle": {
+        "type": "Text",
+        "config": {
+          "label": "Subtitle"
+        }
+      },
+      "intro_content": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Introduction Content"
+        }
+      },
+      "experience_years": {
+        "type": "Text",
+        "config": {
+          "label": "Years of Experience (e.g., 5 years, 3+ years)"
+        }
+      }
+    },
+    "Skills": {
+      "skills": {
+        "type": "Group",
+        "config": {
+          "label": "Skills",
+          "fields": {
+            "skill_name": {
+              "type": "Text",
+              "config": {
+                "label": "Skill Name"
+              }
+            }
+          }
+        }
+      }
+    },
+    "Education": {
+      "education": {
+        "type": "Group",
+        "config": {
+          "label": "Education",
+          "fields": {
+            "edu_title": {
+              "type": "Text",
+              "config": {
+                "label": "Degree/Course"
+              }
+            },
+            "edu_place": {
+              "type": "Text",
+              "config": {
+                "label": "Institution"
+              }
+            },
+            "edu_year": {
+              "type": "Text",
+              "config": {
+                "label": "Year"
+              }
+            }
+          }
+        }
+      }
+    },
+    "Achievements": {
+      "achievements": {
+        "type": "Group",
+        "config": {
+          "label": "Achievements",
+          "fields": {
+            "achievement_title": {
+              "type": "Text",
+              "config": {
+                "label": "Achievement Title"
+              }
+            },
+            "achievement_year": {
+              "type": "Text",
+              "config": {
+                "label": "Year"
+              }
+            },
+            "achievement_description": {
+              "type": "StructuredText",
+              "config": {
+                "label": "Description"
+              }
+            }
+          }
+        }
+      }
+    },
+    "SEO": {
+      "meta_title": {
+        "type": "Text",
+        "config": {
+          "label": "Meta Title"
+        }
+      },
+      "meta_description": {
+        "type": "Text",
+        "config": {
+          "label": "Meta Description"
+        }
+      }
+    }
+  }
+}

@@ -281,7 +281,8 @@ body {
 }
 
 .prose p {
-  margin: 0 0 1.25em;
+  margin: 0;
+  line-height: 1.75;
 }
 
 .prose h1 {
@@ -307,7 +308,7 @@ body {
   padding: 0.1em 0.45em;
   border-radius: 0.35em;
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
   transition:
     background-color 0.2s ease,
     color 0.2s ease,
@@ -736,10 +737,186 @@ html.dark .shiki {
   white-space: pre-wrap;
 }
 
-.post-body pre:not(.shiki) {
+.prose pre {
   background: transparent;
-  margin: 0;
   padding: 0;
+  margin: 0;
+  border: 0;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.prose pre code {
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  font-size: inherit;
+  line-height: inherit;
+  border: 0;
+}
+
+/* Shiki syntax highlighting */
+.shiki {
+  background: #2e3440 !important;
+  color: #eceff4 !important;
+  padding: 1.5rem !important;
+  border-radius: 0.75rem !important;
+  border: 1px solid #3b4252 !important;
+  overflow-x: auto !important;
+  margin: 1.5rem 0 !important;
+  font-family: 'Menlo', 'Monaco', 'Courier New', monospace !important;
+  font-size: 0.875rem !important;
+  line-height: 1.7 !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3) !important;
+}
+
+.shiki code {
+  background: transparent !important;
+  padding: 0 !important;
+  font-size: inherit !important;
+  color: inherit !important;
+}
+
+.shiki pre {
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  overflow: visible !important;
+}
+
+.shiki-highlighted {
+  background: #2e3440 !important;
+  padding: 1.5rem !important;
+  border-radius: 0.75rem !important;
+  border: 1px solid #3b4252 !important;
+  overflow-x: auto !important;
+  font-family: 'Menlo', 'Monaco', 'Courier New', monospace !important;
+  font-size: 0.875rem !important;
+  line-height: 1.7 !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3) !important;
+}
+
+.shiki-highlighted code {
+  background: transparent !important;
+  padding: 0 !important;
+  font-size: inherit !important;
+  color: inherit !important;
+}
+
+.shiki-highlighted pre {
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  overflow: visible !important;
+}
+
+.shiki-fallback {
+  background: #2e3440;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid #3b4252;
+  overflow-x: auto;
+  font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: #eceff4;
+  margin: 1.5rem 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Syntax colors for Shiki (Nord theme) */
+.shiki .line {
+  min-height: 1.7em;
+  white-space: pre !important;
+}
+
+/* Keywords */
+.shiki .keyword {
+  color: #81a1c1 !important;
+}
+
+/* Strings */
+.shiki .string {
+  color: #a3be8c !important;
+}
+
+/* Numbers */
+.shiki .number {
+  color: #b48ead !important;
+}
+
+/* Comments */
+.shiki .comment {
+  color: #616e88 !important;
+  font-style: italic !important;
+}
+
+/* Functions */
+.shiki .function {
+  color: #88c0d0 !important;
+}
+
+/* Variables */
+.shiki .variable {
+  color: #eceff4 !important;
+}
+
+/* Tags/JSX */
+.shiki .tag {
+  color: #bf616a !important;
+}
+
+.shiki .attr-name {
+  color: #8fbcbb !important;
+}
+
+.timeline-description pre {
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.timeline-description pre code {
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  font-size: inherit;
+  line-height: inherit;
+  border: 0;
+}
+
+.card-description pre {
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.card-description pre code {
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  font-size: inherit;
+  line-height: inherit;
   border: 0;
 }
 
@@ -914,9 +1091,9 @@ a.item li {
 }
 
 .photos-view-toggle {
-  position: fixed;
-  left: 1.5rem;
-  top: 5rem;
+  position: absolute;
+  left: 0;
+  top: 0;
   z-index: 30;
   display: flex;
   align-items: center;
@@ -1272,7 +1449,17 @@ a.item li {
 }
 
 @utility timeline-bullets {
-  @apply mb-3 flex list-none flex-col gap-1 p-0;
+  @apply mb-3 list-disc flex flex-col gap-1 p-0 pl-5;
+}
+
+.timeline-bullets li {
+  margin-left: 0.5rem;
+  color: var(--foreground);
+  opacity: 0.85;
+}
+
+.timeline-bullets li::marker {
+  opacity: 0.5;
 }
 
 @utility skill-chips {
@@ -1367,4 +1554,12 @@ a.item li {
 
 @utility updated-note {
   @apply mt-7 flex items-center gap-2 text-[0.8rem] text-zinc-500;
+}
+
+.prose-content > * {
+  margin-bottom: 0;
+}
+
+.prose-content > * + * {
+  margin-top: 1.25em;
 }

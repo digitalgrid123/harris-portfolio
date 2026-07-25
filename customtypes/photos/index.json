@@ -1,0 +1,81 @@
+{
+  "id": "photos",
+  "label": "Photos",
+  "repeatable": false,
+  "status": true,
+  "json": {
+    "Main": {
+      "title": {
+        "type": "Text",
+        "config": {
+          "label": "Page Title"
+        }
+      },
+      "subtitle": {
+        "type": "Text",
+        "config": {
+          "label": "Page Subtitle"
+        }
+      },
+      "intro_text": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Introduction Text (Optional)"
+        }
+      }
+    },
+    "Gallery": {
+      "photos": {
+        "type": "Group",
+        "config": {
+          "label": "Photos",
+          "fields": {
+            "photo_image": {
+              "type": "Image",
+              "config": {
+                "label": "Photo"
+              }
+            },
+            "photo_alt": {
+              "type": "Text",
+              "config": {
+                "label": "Alt Text (for accessibility)"
+              }
+            },
+            "photo_description": {
+              "type": "Text",
+              "config": {
+                "label": "Description (Optional)"
+              }
+            }
+          }
+        }
+      },
+      "default_view": {
+        "type": "Select",
+        "config": {
+          "label": "Default View Mode",
+          "placeholder": "Select default view",
+          "options": [
+            "grid-2",
+            "grid-3"
+          ]
+        }
+      }
+    },
+    "SEO": {
+      "meta_title": {
+        "type": "Text",
+        "config": {
+          "label": "Meta Title"
+        }
+      },
+      "meta_description": {
+        "type": "Text",
+        "config": {
+          "label": "Meta Description"
+        }
+      }
+    }
+  }
+}

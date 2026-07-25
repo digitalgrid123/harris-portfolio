@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { POSTS } from "@/config";
-import type { PostItem } from "@/config";
+import { createClient } from "@/prismicio";
 
 export const metadata = {
   title: "Blog",
@@ -36,10 +35,15 @@ function getYear(iso: string) {
   return new Date(iso).getUTCFullYear();
 }
 
-function groupByYear(items: readonly PostItem[]) {
-  const groups = new Map<number, PostItem[]>();
+function groupByYear(
+  items: Array<{ first_publication_date: string; uid: string; data: any }>,
+) {
+  const groups = new Map<
+    number,
+    Array<{ first_publication_date: string; uid: string; data: any }>
+  >();
   for (const item of items) {
-    const year = getYear(item.date);
+    const year = getYear(item.first_publication_date);
     const list = groups.get(year) ?? [];
     list.push(item);
     groups.set(year, list);
@@ -47,11 +51,26 @@ function groupByYear(items: readonly PostItem[]) {
   return Array.from(groups.entries()).sort(([a], [b]) => b - a);
 }
 
-export default function PostsPage() {
-  const postsSorted = [...POSTS].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-  );
-  const groups = groupByYear(postsSorted);
+async function getPosts() {
+  const client = createClient();
+  try {
+    const posts = await client.getAllByType("post", {
+      orderings: {
+        field: "document.first_publication_date",
+        direction: "desc",
+      },
+    });
+    return posts;
+  } catch (error) {
+    console.error("Failed to fetch posts from Prismic:", error);
+    return [];
+  }
+}
+
+export default async function PostsPage() {
+  const posts = await getPosts();
+  console.log("🚀 ~ PostsPage ~ posts:", posts);
+  const groups = groupByYear(posts);
 
   let stage = 0;
   const nextStage = () => stage++;
@@ -80,72 +99,32 @@ export default function PostsPage() {
     );
 
     for (const post of items) {
-      const isExternal = !!post.external;
-      const href = post.external ?? `/posts/${post.slug}`;
+      const { title, excerpt } = post.data;
+      const uid = post.uid;
       const itemStage = nextStage();
-      const tagDesktop = post.tag ? (
-        <div className="blog-item-tag-desktop">{post.tag}</div>
-      ) : null;
       const content = (
         <li className="li-row-gap2-md no-underline">
           <div className="blog-item-title-row">
-            {post.hasVideo ? (
-              <span className="video-link-icon" title="Provided in video">
-                <i
-                  className="ri-film-line"
-                  style={{
-                    display: "inline-block",
-                    width: "1.2em",
-                    height: "1.2em",
-                    fontSize: "1.2em",
-                    lineHeight: 1,
-                    verticalAlign: "-0.15em",
-                  }}
-                  aria-hidden="true"
-                />
-              </span>
-            ) : null}
             <span
               style={{
                 verticalAlign: "middle",
                 display: "inline-block",
               }}
             >
-              {post.title}
+              {title}
             </span>
-            {isExternal ? (
-              <span className="external-link-icon" title="External">
-                <i
-                  className="ri-external-link-line"
-                  style={{
-                    display: "inline-block",
-                    width: "1em",
-                    height: "1em",
-                    fontSize: "1em",
-                    lineHeight: 1,
-                  }}
-                  aria-hidden="true"
-                />
-              </span>
-            ) : null}
           </div>
           <div className="blog-item-meta-row">
             <span className="text-sm op50 ws-nowrap">
-              {formatDateShort(post.date)}
+              {formatDateShort(post.first_publication_date)}
             </span>
-            <span className="text-sm op40 ws-nowrap">· {post.minutes}min</span>
-            {post.tag ? (
-              <span className="text-sm op40 ws-nowrap blog-item-tag-mobile">
-                · {post.tag}
-              </span>
-            ) : null}
           </div>
         </li>
       );
 
       const row = (
         <div
-          key={post.slug}
+          key={uid}
           className="slide-enter"
           style={
             {
@@ -154,22 +133,9 @@ export default function PostsPage() {
             } as React.CSSProperties
           }
         >
-          {isExternal ? (
-            <a
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="blog-item"
-            >
-              {content}
-              {tagDesktop}
-            </a>
-          ) : (
-            <Link href={href} className="blog-item">
-              {content}
-              {tagDesktop}
-            </Link>
-          )}
+          <Link href={`/posts/${uid}`} className="blog-item">
+            {content}
+          </Link>
         </div>
       );
 
@@ -199,7 +165,13 @@ export default function PostsPage() {
             </p>
           </div>
 
-          <ul className="blog-list">{children}</ul>
+          {posts.length === 0 ? (
+            <div className="text-center opacity-50">
+              <p>No posts yet. Check back soon!</p>
+            </div>
+          ) : (
+            <ul className="blog-list">{children}</ul>
+          )}
         </div>
       </article>
     </main>

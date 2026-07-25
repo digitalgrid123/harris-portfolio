@@ -1,0 +1,158 @@
+{
+  "id": "resume",
+  "label": "Resume",
+  "repeatable": false,
+  "status": true,
+  "json": {
+    "Main": {
+      "title": {
+        "type": "Text",
+        "config": {
+          "label": "Title"
+        }
+      },
+      "subtitle": {
+        "type": "Text",
+        "config": {
+          "label": "Subtitle"
+        }
+      }
+    },
+    "CTAs": {
+      "cta1_label": {
+        "type": "Text",
+        "config": {
+          "label": "CTA 1 Label"
+        }
+      },
+      "cta1_link": {
+        "type": "Text",
+        "config": {
+          "label": "CTA 1 Link"
+        }
+      },
+      "cta1_icon": {
+        "type": "Text",
+        "config": {
+          "label": "CTA 1 Icon"
+        }
+      },
+      "cta2_label": {
+        "type": "Text",
+        "config": {
+          "label": "CTA 2 Label"
+        }
+      },
+      "cta2_link": {
+        "type": "Text",
+        "config": {
+          "label": "CTA 2 Link"
+        }
+      },
+      "cta2_icon": {
+        "type": "Text",
+        "config": {
+          "label": "CTA 2 Icon"
+        }
+      }
+    },
+    "Stats": {
+      "stats": {
+        "type": "Group",
+        "config": {
+          "label": "Stats",
+          "fields": {
+            "stat_value": {
+              "type": "Text",
+              "config": {
+                "label": "Stat Value"
+              }
+            },
+            "stat_label": {
+              "type": "Text",
+              "config": {
+                "label": "Stat Label"
+              }
+            }
+          }
+        }
+      }
+    },
+    "Experience": {
+      "experience": {
+        "type": "Group",
+        "config": {
+          "label": "Experience",
+          "fields": {
+            "exp_period": {
+              "type": "Text",
+              "config": {
+                "label": "Period"
+              }
+            },
+            "exp_role": {
+              "type": "Text",
+              "config": {
+                "label": "Role"
+              }
+            },
+            "exp_company": {
+              "type": "Text",
+              "config": {
+                "label": "Company"
+              }
+            },
+            "exp_description": {
+              "type": "StructuredText",
+              "config": {
+                "label": "Description"
+              }
+            },
+            "exp_bullets": {
+              "type": "Group",
+              "config": {
+                "label": "Bullets",
+                "fields": {
+                  "bullet_text": {
+                    "type": "Text",
+                    "config": {
+                      "label": "Bullet Text"
+                    }
+                  }
+                }
+              }
+            },
+            "exp_skills": {
+              "type": "Group",
+              "config": {
+                "label": "Skills",
+                "fields": {
+                  "skill_name": {
+                    "type": "Text",
+                    "config": {
+                      "label": "Skill Name"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "SEO": {
+      "meta_title": {
+        "type": "Text",
+        "config": {
+          "label": "Meta Title"
+        }
+      },
+      "meta_description": {
+        "type": "Text",
+        "config": {
+          "label": "Meta Description"
+        }
+      }
+    }
+  }
+}

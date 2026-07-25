@@ -3,9 +3,10 @@
 import Image from "next/image";
 import { useState, useEffect, useCallback } from "react";
 import { BackLink } from "@/components";
-import photosData from "@/config/photos-data.json";
+import { createClient } from "@/prismicio";
+import { siteConfig } from "@/config";
 
-// We have 547 photos, let's load 24 at a time to keep performance blazing fast.
+// Load 24 photos at a time for performance
 const BATCH_SIZE = 24;
 
 const VIEW_MODES = [
@@ -19,65 +20,89 @@ const VIEW_MODES = [
     title: "Standard view (3 columns)",
     layout: "grid-3",
   },
-  {
-    icon: "ri-layout-masonry-line",
-    title: "Masonry view",
-    layout: "masonry",
-  },
 ] as const;
 
-type ViewIndex = 0 | 1 | 2;
+type ViewIndex = 0 | 1;
 
-const MASONRY_PATTERNS = [
-  "photos-masonry-large",
-  "photos-masonry-small",
-  "photos-masonry-small",
-  "photos-masonry-wide",
-  "photos-masonry-tall",
-  "photos-masonry-small",
-  "photos-masonry-wide",
-  "photos-masonry-small",
-] as const;
-
-function getMasonryClass(index: number) {
-  return MASONRY_PATTERNS[index % MASONRY_PATTERNS.length];
-}
+const queryPhotos = async () => {
+  const client = createClient();
+  try {
+    return await client.getSingle("photos");
+  } catch (error) {
+    console.error("Failed to fetch photos content from Prismic:", error);
+    return null;
+  }
+};
 
 export default function PhotosPage() {
+  const [pageTitle, setPageTitle] = useState("Photos");
+  const [pageSubtitle, setPageSubtitle] = useState("Moments captured through the lens.");
+  const [allPhotos, setAllPhotos] = useState<any[]>([]);
+  const [defaultView, setDefaultView] = useState<ViewIndex>(1);
   const [visibleCount, setVisibleCount] = useState(BATCH_SIZE);
   const [viewIndex, setViewIndex] = useState<ViewIndex>(1);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Load Prismic data on mount
+  useEffect(() => {
+    const loadPhotosData = async () => {
+      setLoading(true);
+      const photosPage = await queryPhotos();
+      if (photosPage && photosPage.data) {
+        setPageTitle(photosPage.data?.title || "Photos");
+        setPageSubtitle(photosPage.data?.subtitle || "Moments captured through the lens.");
+        
+        // Set photos from Prismic
+        if (Array.isArray(photosPage.data?.photos)) {
+          setAllPhotos(photosPage.data.photos);
+        }
+        
+        // Set default view
+        const viewModeMap: Record<string, ViewIndex> = {
+          "grid-2": 0,
+          "grid-3": 1,
+        };
+        const viewMode = photosPage.data?.default_view as string;
+        if (viewMode && viewModeMap[viewMode] !== undefined) {
+          setDefaultView(viewModeMap[viewMode]);
+          setViewIndex(viewModeMap[viewMode]);
+        }
+      }
+      setLoading(false);
+    };
+    loadPhotosData();
+  }, []);
 
   const viewMode = VIEW_MODES[viewIndex];
-  const isMasonry = viewMode.layout === "masonry";
 
   const cycleView = () => {
     setViewIndex((prev) => ((prev + 1) % VIEW_MODES.length) as ViewIndex);
   };
 
-  const visiblePhotos = photosData.slice(0, visibleCount);
-  const hasMore = visibleCount < photosData.length;
+  const visiblePhotos = allPhotos.slice(0, visibleCount);
+  const hasMore = visibleCount < allPhotos.length;
 
   const loadMore = useCallback(() => {
-    setVisibleCount((prev) => Math.min(prev + BATCH_SIZE, photosData.length));
-  }, []);
+    setVisibleCount((prev) => Math.min(prev + BATCH_SIZE, allPhotos.length));
+  }, [allPhotos.length]);
 
   // Handle lightbox navigation
   const nextPhoto = useCallback(() => {
     if (lightboxIndex !== null) {
       setLightboxIndex((prev) =>
-        prev !== null && prev < photosData.length - 1 ? prev + 1 : 0,
+        prev !== null && prev < allPhotos.length - 1 ? prev + 1 : 0,
       );
     }
-  }, [lightboxIndex]);
+  }, [lightboxIndex, allPhotos.length]);
 
   const prevPhoto = useCallback(() => {
     if (lightboxIndex !== null) {
       setLightboxIndex((prev) =>
-        prev !== null && prev > 0 ? prev - 1 : photosData.length - 1,
+        prev !== null && prev > 0 ? prev - 1 : allPhotos.length - 1,
       );
     }
-  }, [lightboxIndex]);
+  }, [lightboxIndex, allPhotos.length]);
 
   const closeLightbox = useCallback(() => {
     setLightboxIndex(null);
@@ -96,29 +121,34 @@ export default function PhotosPage() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [lightboxIndex, nextPhoto, prevPhoto, closeLightbox]);
 
-  // Clean the inline styles from JSON for React inline style compatibility
-  const getBackgroundStyle = (styleStr: string) => {
-    const bgMatch = styleStr.match(/background-image:\s*([^;]+)/);
-    return bgMatch ? { backgroundImage: bgMatch[1] } : {};
-  };
+  if (loading) {
+    return (
+      <main className="px-7 py-10 relative z-10 flex-1 flex items-center justify-center">
+        <p>Loading photos...</p>
+      </main>
+    );
+  }
 
   return (
     <main className="px-7 py-10 of-x-hidden relative z-10 flex-1">
-      <button
-        type="button"
-        onClick={cycleView}
-        className="photos-view-toggle slide-enter-50"
-        title="Switch view"
-        aria-label={viewMode.title}
-      >
-        <i className={`${viewMode.icon} text-lg`} aria-hidden="true" />
-      </button>
+      <div className="relative">
+        <button
+          type="button"
+          onClick={cycleView}
+          className="photos-view-toggle slide-enter-50"
+          title="Switch view"
+          aria-label={viewMode.title}
+        >
+          <i className={`${viewMode.icon} text-lg`} aria-hidden="true" />
+        </button>
+      </div>
 
       {/* Page Header */}
+      {/* Page Header */}
       <div className="prose m-auto mb-8 text-center">
-        <h1 className="page-title slide-enter-50">Photos</h1>
+        <h1 className="page-title slide-enter-50">{pageTitle}</h1>
         <p className="page-subtitle slide-enter-50">
-          Moments captured through the lens.
+          {pageSubtitle}
         </p>
       </div>
 
@@ -127,22 +157,19 @@ export default function PhotosPage() {
           <div
             className={`photos-grid photos-grid-${viewMode.layout} slide-enter-content`}
           >
-            {visiblePhotos.map((photo, index) => (
+            {visiblePhotos.map((photo: any, index: number) => (
               <div
-                key={photo.index}
+                key={index}
                 onClick={() => setLightboxIndex(index)}
-                className={`photos-card group relative cursor-zoom-in rounded-lg overflow-hidden hover:scale-[1.01] transition-transform duration-300 ${
-                  isMasonry ? getMasonryClass(index) : "aspect-square"
-                }`}
+                className={`photos-card group relative cursor-zoom-in rounded-lg overflow-hidden hover:scale-[1.01] transition-transform duration-300 aspect-square`}
               >
                 <Image
-                  src={photo.src}
-                  alt={`Photo ${photo.index + 1}`}
+                  src={photo.photo_image?.url || ""}
+                  alt={photo.photo_alt || `Photo ${index + 1}`}
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   loading="lazy"
                   className="object-cover opacity-0 group-hover:scale-105 transition-transform duration-500 absolute inset-0 h-full"
-                  style={getBackgroundStyle(photo.style)}
                   onLoad={(e) => {
                     (e.currentTarget as HTMLImageElement).classList.remove(
                       "opacity-0",
@@ -151,7 +178,7 @@ export default function PhotosPage() {
                 />
                 <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
                   <span className="text-[10px] font-mono text-white/60 bg-black/40 px-2 py-0.5 rounded">
-                    #{photo.index + 1}
+                    #{index + 1}
                   </span>
                 </div>
               </div>
@@ -173,18 +200,25 @@ export default function PhotosPage() {
             </div>
           )}
 
+          {/* Empty State */}
+          {!loading && allPhotos.length === 0 && (
+            <div className="flex justify-center items-center py-12">
+              <p className="text-zinc-500">No photos yet. Add photos in Prismic.</p>
+            </div>
+          )}
+
           {/* Back navigation */}
           <BackLink href="/" className="mt-16" />
         </div>
       </article>
 
       {/* Lightbox Modal */}
-      {lightboxIndex !== null && (
+      {lightboxIndex !== null && allPhotos[lightboxIndex] && (
         <div className="fixed inset-0 z-50 flex flex-col justify-between bg-black/95 backdrop-blur-sm p-4 animate-fade-in select-none">
           {/* Top Bar */}
           <div className="flex justify-between items-center w-full text-white/80 p-2 z-10">
             <span className="font-mono text-sm">
-              {lightboxIndex + 1} / {photosData.length}
+              {lightboxIndex + 1} / {allPhotos.length}
             </span>
             <button
               onClick={closeLightbox}
@@ -209,12 +243,11 @@ export default function PhotosPage() {
             {/* Image */}
             <div className="relative max-w-full max-h-[75vh] sm:max-h-[80vh] w-full h-full flex items-center justify-center">
               <Image
-                src={photosData[lightboxIndex].src}
-                alt={`Photo ${photosData[lightboxIndex].index + 1}`}
+                src={allPhotos[lightboxIndex]?.photo_image?.url || ""}
+                alt={allPhotos[lightboxIndex]?.photo_alt || `Photo ${lightboxIndex + 1}`}
                 fill
                 sizes="100vw"
                 className="object-contain rounded-md shadow-2xl transition-all duration-300"
-                style={getBackgroundStyle(photosData[lightboxIndex].style)}
               />
             </div>
 

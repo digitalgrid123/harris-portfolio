@@ -1,0 +1,69 @@
+{
+  "id": "note",
+  "label": "Note",
+  "repeatable": true,
+  "status": true,
+  "json": {
+    "Main": {
+      "uid": {
+        "type": "UID",
+        "config": {
+          "label": "Note UID"
+        }
+      },
+      "title": {
+        "type": "Text",
+        "config": {
+          "label": "Note Title"
+        }
+      },
+      "excerpt": {
+        "type": "Text",
+        "config": {
+          "label": "Note Excerpt"
+        }
+      },
+      "content": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Note Content",
+          "placeholder": "Enter note content..."
+        }
+      }
+    },
+    "Media": {
+      "featured_image": {
+        "type": "Image",
+        "config": {
+          "label": "Featured Image (Optional)"
+        }
+      },
+      "image_alt": {
+        "type": "Text",
+        "config": {
+          "label": "Image Alt Text (for accessibility)"
+        }
+      },
+      "image_caption": {
+        "type": "Text",
+        "config": {
+          "label": "Image Caption (Optional)"
+        }
+      }
+    },
+    "SEO": {
+      "meta_title": {
+        "type": "Text",
+        "config": {
+          "label": "Meta Title"
+        }
+      },
+      "meta_description": {
+        "type": "Text",
+        "config": {
+          "label": "Meta Description"
+        }
+      }
+    }
+  }
+}

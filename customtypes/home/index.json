@@ -1,0 +1,123 @@
+{
+  "id": "home",
+  "label": "Home",
+  "repeatable": false,
+  "status": true,
+  "json": {
+    "Hero": {
+      "title": {
+        "type": "Text",
+        "config": {
+          "label": "Your Name (Main Heading)"
+        }
+      },
+      "subtitle": {
+        "type": "Text",
+        "config": {
+          "label": "Subtitle (Optional)"
+        }
+      },
+      "intro_text": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Intro Paragraph",
+          "placeholder": "Hey! I'm... passionate full-stack developer..."
+        }
+      }
+    },
+    "Working At": {
+      "company1_name": {
+        "type": "Text",
+        "config": {
+          "label": "Company 1 Name"
+        }
+      },
+      "company1_url": {
+        "type": "Text",
+        "config": {
+          "label": "Company 1 URL"
+        }
+      },
+      "company1_logo": {
+        "type": "Image",
+        "config": {
+          "label": "Company 1 Logo"
+        }
+      },
+      "company2_name": {
+        "type": "Text",
+        "config": {
+          "label": "Company 2 Name"
+        }
+      },
+      "company2_url": {
+        "type": "Text",
+        "config": {
+          "label": "Company 2 URL"
+        }
+      },
+      "company2_logo": {
+        "type": "Image",
+        "config": {
+          "label": "Company 2 Logo"
+        }
+      }
+    },
+    "Main Content": {
+      "content_sections": {
+        "type": "Group",
+        "config": {
+          "label": "Content Sections",
+          "fields": {
+            "section_title": {
+              "type": "Text",
+              "config": {
+                "label": "Section Title (Optional)"
+              }
+            },
+            "section_text": {
+              "type": "StructuredText",
+              "config": {
+                "label": "Section Content"
+              }
+            }
+          }
+        }
+      }
+    },
+    "Social Links": {
+      "github_url": {
+        "type": "Text",
+        "config": {
+          "label": "GitHub URL"
+        }
+      },
+      "linkedin_url": {
+        "type": "Text",
+        "config": {
+          "label": "LinkedIn URL"
+        }
+      },
+      "email": {
+        "type": "Text",
+        "config": {
+          "label": "Email Address"
+        }
+      }
+    },
+    "SEO": {
+      "meta_title": {
+        "type": "Text",
+        "config": {
+          "label": "Meta Title"
+        }
+      },
+      "meta_description": {
+        "type": "Text",
+        "config": {
+          "label": "Meta Description"
+        }
+      }
+    }
+  }
+}

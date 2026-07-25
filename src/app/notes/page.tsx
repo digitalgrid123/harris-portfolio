@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { NOTES } from "@/config";
-import type { NoteItem } from "@/config";
+import { createClient } from "@/prismicio";
 
 export const metadata = {
   title: "Notes",
@@ -36,10 +35,15 @@ function getYear(iso: string) {
   return new Date(iso).getUTCFullYear();
 }
 
-function groupByYear(items: readonly NoteItem[]) {
-  const groups = new Map<number, NoteItem[]>();
+function groupByYear(
+  items: Array<{ first_publication_date: string; uid: string; data: any }>,
+) {
+  const groups = new Map<
+    number,
+    Array<{ first_publication_date: string; uid: string; data: any }>
+  >();
   for (const item of items) {
-    const year = getYear(item.date);
+    const year = getYear(item.first_publication_date);
     const list = groups.get(year) ?? [];
     list.push(item);
     groups.set(year, list);
@@ -47,11 +51,25 @@ function groupByYear(items: readonly NoteItem[]) {
   return Array.from(groups.entries()).sort(([a], [b]) => b - a);
 }
 
-export default function NotesPage() {
-  const itemsSorted = [...NOTES].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-  );
-  const groups = groupByYear(itemsSorted);
+async function getNotes() {
+  const client = createClient();
+  try {
+    const notes = await client.getAllByType("note", {
+      orderings: {
+        field: "document.first_publication_date",
+        direction: "desc",
+      },
+    });
+    return notes;
+  } catch (error) {
+    console.error("Failed to fetch notes from Prismic:", error);
+    return [];
+  }
+}
+
+export default async function NotesPage() {
+  const notes = await getNotes();
+  const groups = groupByYear(notes);
 
   let stage = 0;
   const nextStage = () => stage++;
@@ -80,72 +98,32 @@ export default function NotesPage() {
     );
 
     for (const note of items) {
-      const isExternal = !!note.external;
-      const href = note.external ?? `/notes/${note.slug}`;
+      const { title, excerpt } = note.data;
+      const uid = note.uid;
       const itemStage = nextStage();
-      const tagDesktop = note.tag ? (
-        <div className="blog-item-tag-desktop">{note.tag}</div>
-      ) : null;
       const content = (
         <li className="li-row-gap2-md no-underline">
           <div className="blog-item-title-row">
-            {note.hasVideo ? (
-              <span className="video-link-icon" title="Provided in video">
-                <i
-                  className="ri-film-line"
-                  style={{
-                    display: "inline-block",
-                    width: "1.2em",
-                    height: "1.2em",
-                    fontSize: "1.2em",
-                    lineHeight: 1,
-                    verticalAlign: "-0.15em",
-                  }}
-                  aria-hidden="true"
-                />
-              </span>
-            ) : null}
             <span
               style={{
                 verticalAlign: "middle",
                 display: "inline-block",
               }}
             >
-              {note.title}
+              {title}
             </span>
-            {isExternal ? (
-              <span className="external-link-icon" title="External">
-                <i
-                  className="ri-external-link-line"
-                  style={{
-                    display: "inline-block",
-                    width: "1em",
-                    height: "1em",
-                    fontSize: "1em",
-                    lineHeight: 1,
-                  }}
-                  aria-hidden="true"
-                />
-              </span>
-            ) : null}
           </div>
           <div className="blog-item-meta-row">
             <span className="text-sm op50 ws-nowrap">
-              {formatDateShort(note.date)}
+              {formatDateShort(note.first_publication_date)}
             </span>
-            <span className="text-sm op40 ws-nowrap">· {note.minutes}min</span>
-            {note.tag ? (
-              <span className="text-sm op40 ws-nowrap blog-item-tag-mobile">
-                · {note.tag}
-              </span>
-            ) : null}
           </div>
         </li>
       );
 
       const row = (
         <div
-          key={note.slug}
+          key={uid}
           className="slide-enter"
           style={
             {
@@ -154,25 +132,9 @@ export default function NotesPage() {
             } as React.CSSProperties
           }
         >
-          {isExternal ? (
-            <a
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="item block font-normal mb-6 mt-2 no-underline"
-            >
-              {content}
-              {tagDesktop}
-            </a>
-          ) : (
-            <Link
-              href={href}
-              className="item block font-normal mb-6 mt-2 no-underline"
-            >
-              {content}
-              {tagDesktop}
-            </Link>
-          )}
+          <Link href={`/notes/${uid}`} className="item block font-normal mb-6 mt-2">
+            {content}
+          </Link>
         </div>
       );
 
@@ -215,7 +177,13 @@ export default function NotesPage() {
             </div>
           </div>
 
-          <ul className="list-none m-0 p-0">{children}</ul>
+          {notes.length === 0 ? (
+            <div className="text-center opacity-50">
+              <p>No notes yet. Check back soon!</p>
+            </div>
+          ) : (
+            <ul className="list-none m-0 p-0">{children}</ul>
+          )}
         </div>
       </article>
     </main>

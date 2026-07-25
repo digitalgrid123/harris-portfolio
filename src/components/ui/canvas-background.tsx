@@ -309,12 +309,12 @@ export function CanvasBackground() {
       const [x2, y2] = polarOffset(x, y, len, angle);
 
       const isDark = themeRef.current === "dark";
-      ctx.strokeStyle = isDark ? "rgba(200, 200, 200, 0.08)" : "rgba(100, 100, 100, 0.05)";
+      ctx!.strokeStyle = isDark ? "rgba(200, 200, 200, 0.08)" : "rgba(100, 100, 100, 0.05)";
 
-      ctx.beginPath();
-      ctx.moveTo(x, y);
-      ctx.lineTo(x2, y2);
-      ctx.stroke();
+      ctx!.beginPath();
+      ctx!.moveTo(x, y);
+      ctx!.lineTo(x2, y2);
+      ctx!.stroke();
 
       if (x2 < -100 || x2 > width + 100 || y2 < -100 || y2 > height + 100) {
         return;
@@ -333,10 +333,10 @@ export function CanvasBackground() {
     }
 
     function startPlum() {
-      ctx.clearRect(0, 0, width, height);
-      ctx.lineWidth = 1;
+      ctx!.clearRect(0, 0, width, height);
+      ctx!.lineWidth = 1;
       const isDark = themeRef.current === "dark";
-      ctx.strokeStyle = isDark ? "rgba(136, 136, 136, 0.38)" : "rgba(100, 100, 100, 0.28)";
+      ctx!.strokeStyle = isDark ? "rgba(136, 136, 136, 0.38)" : "rgba(100, 100, 100, 0.28)";
 
       queue = [];
       nextQueue = [];
@@ -367,7 +367,7 @@ export function CanvasBackground() {
       canvas.height = Math.floor(height * dpr);
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
 
       if (currentMode === "dots") {
         buildGrid();
@@ -387,7 +387,7 @@ export function CanvasBackground() {
 
       if (currentMode === "dots") {
         const t = (Date.now() - startTime) / 10000;
-        ctx.clearRect(0, 0, width, height);
+        ctx!.clearRect(0, 0, width, height);
 
         for (let i = 0; i < dots.length; i += 1) {
           const d = dots[i];
@@ -415,10 +415,10 @@ export function CanvasBackground() {
             (Math.abs(Math.cos(angle)) * 0.5 + 0.5) * d.opacity * MAX_ALPHA;
           const alpha = Math.max(0, Math.min(1, base + alphaBoost));
 
-          ctx.beginPath();
-          ctx.arc(cx, cy, DOT_RADIUS, 0, Math.PI * 2);
-          ctx.fillStyle = colorFor(isDark, alpha);
-          ctx.fill();
+          ctx!.beginPath();
+          ctx!.arc(cx, cy, DOT_RADIUS, 0, Math.PI * 2);
+          ctx!.fillStyle = colorFor(isDark, alpha);
+          ctx!.fill();
         }
       } else {
         // PLUM MODE: exact timing throttling and queuing
