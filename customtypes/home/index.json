@@ -95,7 +95,7 @@
       "releases_url": {
         "type": "Text",
         "config": {
-          "label": "Releases/Projects URL (e.g., https://releases.antfu.me or GitHub releases URL)"
+          "label": "Releases/Projects URL (e.g., GitHub releases URL)"
         }
       },
       "linkedin_url": {

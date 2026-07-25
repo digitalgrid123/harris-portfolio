@@ -33,5 +33,10 @@
     "slice-machine-ui": "^2.21.4",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "allowScripts": {
+    "@scarf/scarf@1.4.0": true,
+    "sharp@0.34.5": true,
+    "unrs-resolver@1.12.2": true
   }
 }
